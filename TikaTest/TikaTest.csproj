@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<tikaVer>2.9.0</tikaVer>
+	<slf4jVer>2.0.9</slf4jVer>
+	<log4jVer>2.19.0</log4jVer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="tika.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+<ItemGroup>
+	<PackageReference Include="IKVM" Version="8.6.2" />
+	<PackageReference Include="IKVM.Maven.Sdk" Version="1.5.5" />
+	<MavenReference Include="org.apache.tika:tika-core" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-serialization" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parsers-standard-package" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-zip-commons" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-text-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-pdf-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-image-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-xml-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-miscoffice-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-microsoft-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.logging.log4j:log4j-core" Version="$(log4jVer)" />
+	<MavenReference Include="org.apache.logging.log4j:log4j-slf4j2-impl" Version="$(log4jVer)" />
+	<MavenReference Include="org.apache.logging.log4j:log4j-1.2-api" Version="$(log4jVer)" />
+	<MavenReference Include="org.slf4j:slf4j-simple" Version="$(slf4jVer)" />
+	<MavenReference Include="org.slf4j:slf4j-api" Version="$(slf4jVer)" />
+	<MavenReference Include="org.slf4j:jul-to-slf4j" Version="$(slf4jVer)" />
+	<MavenReference Include="org.slf4j:jcl-over-slf4j" Version="$(slf4jVer)" />
+	<MavenReference Include="org.slf4j:log4j-over-slf4j" Version="$(slf4jVer)" />
+	<MavenReference Remove="log4j:log4j" />
+	<MavenReference Remove="commons-logging:commons-logging" />
+	<MavenReference Remove="ch.qos.logback:logback-classic" />
+	<MavenReference Remove="ch.qos.logback:logback-core" />
+	<MavenReference Remove="ch.qos.reload4j:reload4j" />
+	<MavenReference Remove="org.slf4j:slf4j-reload4j" />
+</ItemGroup>
+</Project>
