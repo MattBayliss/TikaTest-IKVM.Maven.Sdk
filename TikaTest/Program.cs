@@ -8,14 +8,28 @@ using org.apache.tika.detect;
 using org.apache.tika.parser.microsoft.ooxml;
 using org.apache.tika.parser.microsoft;
 using org.apache.tika.config;
+using System.Reflection;
+using System.IO;
+using System.Text.RegularExpressions;
+using org.apache.log4j.config;
 
 var filePath = @"C:\Temp\test.docx";
 
 using var fs = new FileStream(filePath, FileMode.Open);
 using var stream = new InputStreamWrapper(fs);
 
-Parser parser1 = new OOXMLParser();
-Parser parser2 = new OfficeParser();
+Assembly.Load("slf4j.simple");
+
+// via https://github.com/KevM/tikaondotnet/pull/152#issuecomment-1713804124
+string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location!)!;
+string[] parserAssemblies = Directory.GetFiles(assemblyPath!, "*.parser.*.dll", SearchOption.AllDirectories);
+
+foreach (string file in parserAssemblies)
+{
+    Assembly.LoadFile(file);
+}
+
+
 
 BodyContentHandler handler = new BodyContentHandler();
 Parser parser = new AutoDetectParser();

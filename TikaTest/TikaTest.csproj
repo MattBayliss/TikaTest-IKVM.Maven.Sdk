@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+	<LangVersion>latest</LangVersion>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -10,16 +11,13 @@
 	<log4jVer>2.19.0</log4jVer>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="tika.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 <ItemGroup>
 	<PackageReference Include="IKVM" Version="8.6.2" />
 	<PackageReference Include="IKVM.Maven.Sdk" Version="1.5.5" />
 	<MavenReference Include="org.apache.tika:tika-core" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-async-cli" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-sqlite3-module" Version="$(tikaVer)" />
+	<MavenReference Include="org.apache.tika:tika-parser-scientific-module" Version="$(tikaVer)" />
 	<MavenReference Include="org.apache.tika:tika-serialization" Version="$(tikaVer)" />
 	<MavenReference Include="org.apache.tika:tika-parsers-standard-package" Version="$(tikaVer)" />
 	<MavenReference Include="org.apache.tika:tika-parser-zip-commons" Version="$(tikaVer)" />
