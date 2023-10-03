@@ -1,22 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using org.apache.tika;
 using org.apache.tika.sax;
 using org.apache.tika.parser;
 using ikvm.io;
 using org.apache.tika.metadata;
-using org.apache.tika.detect;
-using org.apache.tika.parser.microsoft.ooxml;
-using org.apache.tika.parser.microsoft;
-using org.apache.tika.config;
 using System.Reflection;
-using System.IO;
-using System.Text.RegularExpressions;
-using org.apache.log4j.config;
-
-var filePath = @"C:\Temp\test.docx";
-
-using var fs = new FileStream(filePath, FileMode.Open);
-using var stream = new InputStreamWrapper(fs);
+using System.Diagnostics;
 
 Assembly.Load("slf4j.simple");
 
@@ -29,19 +17,62 @@ foreach (string file in parserAssemblies)
     Assembly.LoadFile(file);
 }
 
+var inputDir = new DirectoryInfo(@"C:\temp\TikaTests\input");
+var outputDir = new DirectoryInfo(@"C:\temp\TikaTests\output");
+var errorDir = new DirectoryInfo(@"C:\temp\TikaTests\errors");
 
+if (!inputDir.Exists) inputDir.Create();
 
-BodyContentHandler handler = new BodyContentHandler();
+if(outputDir.Exists) outputDir.Delete(true);
+outputDir.Create();
+
+if(errorDir.Exists) errorDir.Delete(true);
+errorDir.Create();
+
+var inputFiles = inputDir.GetFiles();
+
+Stopwatch timer = Stopwatch.StartNew();
+
 Parser parser = new AutoDetectParser();
-Metadata metadata = new Metadata();
 ParseContext context = new ParseContext();
 
-parser.parse(stream, handler, metadata, context);
-
-string text = handler.toString();
-
-using (var sw = new StreamWriter(@"C:\Temp\output.txt", false))
+foreach (var file in inputFiles)
 {
-    sw.WriteLine(text);
+    string status = "INIT";
+    using var fs = new FileStream(file.FullName, FileMode.Open);
+    using var stream = new InputStreamWrapper(fs);
+
+    var handler = new BodyContentHandler();
+    Metadata metadata = new Metadata();
+
+    timer.Restart();
+
+    try
+    {
+        status = "PARSING";
+        parser.parse(stream, handler, metadata, context);
+
+        var outputPath = Path.Combine(outputDir.FullName, file.Name) + ".txt";
+
+        using StreamWriter outputFile = new StreamWriter(outputPath, false);
+        outputFile.Write(handler.toString());
+
+        status = "PARSED";
+
+    }
+    catch (Exception ex)
+    {
+        status = "ERROR";
+
+        var errorPath = Path.Combine(errorDir.FullName, file.Name) + ".txt";
+        using StreamWriter errorFile = new StreamWriter(errorPath, false);
+        errorFile.Write(ex.ToString());
+    }
+    finally
+    {
+        Console.WriteLine($"{file.Name,22} :: {timer.ElapsedMilliseconds,7} ms :: {status}");
+    }
 }
-Console.WriteLine($"{filePath}: {text}");
+Console.WriteLine();
+Console.WriteLine("##### DONE #####");
+Console.ReadLine();
